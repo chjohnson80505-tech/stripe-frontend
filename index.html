@@ -20,6 +20,8 @@
 
 async function buy(planId) {
 
+    console.log("CLICKED:", planId);
+
     try {
 
         const res = await fetch("https://stripe-backend-hu55.onrender.com/create-checkout-session", {
@@ -30,20 +32,23 @@ async function buy(planId) {
             body: JSON.stringify({ planId })
         });
 
+        console.log("RESPONSE STATUS:", res.status);
+
         const data = await res.json();
+
+        console.log("DATA:", data);
 
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert("Payment session failed");
+            alert("FAILED: " + JSON.stringify(data));
         }
 
     } catch (err) {
-        console.error(err);
-        alert("Server error connecting to backend");
+        console.error("FETCH ERROR:", err);
+        alert("Server error");
     }
 }
-
 </script>
 
 </body>
