@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Store</title>
+  <script src="https://js.stripe.com/v3/"></script>
+</head>
+
+<body>
+
+<h2>Choose Plan</h2>
+
+<button onclick="buy('daily')">Daily</button>
+<button onclick="buy('weekly')">Weekly</button>
+<button onclick="buy('monthly')">Monthly</button>
+<button onclick="buy('six_months')">6 Months</button>
+<button onclick="buy('yearly')">Yearly</button>
+
+<script>
+
+async function buy(planId) {
+
+    const res = await fetch("https://YOUR-BACKEND.onrender.com/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ planId })
+    });
+
+    const data = await res.json();
+
+    if (data.url) {
+        window.location.href = data.url;
+    } else {
+        alert("Error starting payment");
+    }
+}
+
+</script>
+
+</body>
+</html>
