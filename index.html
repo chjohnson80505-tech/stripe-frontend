@@ -1,11 +1,15 @@
+<button onclick="buyPlan('daily')">Daily Pass</button>
+<button onclick="buyPlan('weekly')">Weekly Pass</button>
+<button onclick="buyPlan('monthly')">Monthly Pass</button>
+<button onclick="buyPlan('six_months')">6 Month Pass</button>
+<button onclick="buyPlan('yearly')">Yearly Pass</button>
+
+<script>
 async function buyPlan(planId) {
     try {
-
         const res = await fetch("https://stripe-backend-hu55.onrender.com/create-checkout-session", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ planId })
         });
 
@@ -14,7 +18,7 @@ async function buyPlan(planId) {
         if (data.url) {
             window.location.href = data.url;
         } else {
-            alert("Payment failed: " + (data.error || "Unknown error"));
+            alert("Payment failed");
         }
 
     } catch (err) {
@@ -22,3 +26,4 @@ async function buyPlan(planId) {
         console.error(err);
     }
 }
+</script>
