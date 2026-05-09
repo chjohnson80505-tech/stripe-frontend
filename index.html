@@ -1,36 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>My Store</title>
-  <script src="https://js.stripe.com/v3/"></script>
+    <meta charset="UTF-8">
+    <title>Checkout</title>
+    <script src="https://js.stripe.com/v3/"></script>
 </head>
 
 <body>
 
-<h2>Choose Plan</h2>
+<h2>Choose a Plan</h2>
 
-<button onclick="buy('daily')">Daily</button>
-<button onclick="buy('weekly')">Weekly</button>
-<button onclick="buy('monthly')">Monthly</button>
-<button onclick="buy('six_months')">6 Months</button>
-<button onclick="buy('yearly')">Yearly</button>
+<button onclick="buy('daily')">Daily Pass</button>
+<button onclick="buy('weekly')">Weekly Pass</button>
+<button onclick="buy('monthly')">Monthly Pass</button>
+<button onclick="buy('six_months')">6 Month Pass</button>
+<button onclick="buy('yearly')">Yearly Pass</button>
 
 <script>
 
 async function buy(planId) {
 
-    const res = await fetch(https://stripe-backend-hu55.onrender.com/, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planId })
-    });
+    try {
 
-    const data = await res.json();
+        const res = await fetch("https://stripe-backend-hu55.onrender.com/create-checkout-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ planId })
+        });
 
-    if (data.url) {
-        window.location.href = data.url;
-    } else {
-        alert("Error starting payment");
+        const data = await res.json();
+
+        if (data.url) {
+            window.location.href = data.url;
+        } else {
+            alert("Payment session failed");
+        }
+
+    } catch (err) {
+        console.error(err);
+        alert("Server error connecting to backend");
     }
 }
 
