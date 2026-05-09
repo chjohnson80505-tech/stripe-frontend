@@ -1,52 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>Plans</title>
-
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background: #0f172a;
-    color: white;
-    text-align: center;
-    padding-top: 80px;
-}
-
-button {
-    display: block;
-    margin: 12px auto;
-    padding: 14px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 10px;
-    background: #3b82f6;
-    color: white;
-    cursor: pointer;
-    width: 200px;
-}
-
-button:hover {
-    background: #2563eb;
-}
-</style>
-
-</head>
-
-<body>
-
-<h1>Select Plan</h1>
-
-<button onclick="buy('daily')">Daily Pass</button>
-<button onclick="buy('weekly')">Weekly Pass</button>
-<button onclick="buy('monthly')">Monthly Pass</button>
-<button onclick="buy('six_months')">6 Month Pass</button>
-<button onclick="buy('yearly')">Yearly Pass</button>
-
-<script>
-
-async function buy(planId) {
-
+async function buyPlan(planId) {
     try {
 
         const res = await fetch("https://stripe-backend-hu55.onrender.com/create-checkout-session", {
@@ -66,12 +18,7 @@ async function buy(planId) {
         }
 
     } catch (err) {
+        alert("Request failed");
         console.error(err);
-        alert("Something went wrong. Check backend connection.");
     }
 }
-
-</script>
-
-</body>
-</html>
