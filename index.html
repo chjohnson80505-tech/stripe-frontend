@@ -1,84 +1,38 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OG Clan Bots</title>
-    <!-- Stripe Library -->
-    <script src="https://stripe.com"></script>
-    <script>
-      // GLOBAL CONFIG (Step 5.1 & 5.2 merged)
-      const backend = "https://og-clan-bots-backend.onrender.com/";
-      const stripePub = "pk_live_51TVAjyCDs6LQCbIGs7iwt7rpltX4vmR4kl3NXqtTUT4CrAMoBlrDJAgdWXAvKXXAZ2vB8JnfcMtOrUqflBOK27dK00VM4xhekm";
-    </script>
-    <style>
-        /* Step 5.5 - Styling */
-        body{background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px}
-        h1{color:#C0C0C0;text-align:center}
-        header{margin:20px}
-        p{font-size:.9rem}
-        button{background:#C0C0C0;color:#000;padding:10px 15px;border:none;border-radius:4px;margin:5px;cursor:pointer}
-        button:hover{background:#fff}
-        input{padding:8px;width:100%;margin:10px 0;box-sizing: border-box;}
-        .prices button{display:block;width:100%;margin:5px 0}
-        footer{margin-top:30px;font-size:.8rem;color:#777;text-align:center}
-        #redeem-key, #purchase-key{margin-top:10px;background:#111;padding:8px;border-radius:4px;word-break: break-all;}
-    </style>
-</head>
-<body>
-
-    <header>
-        <h1>OG CLAN BOTS</h1>
-    </header>
-
-    <!-- Step 5.3 - Redemption Section -->
-    <div id="redeem-section" style="margin: 20px auto; max-width: 400px;">
-      <h2>Free Redemption</h2>
-      <input id="redeem-code" placeholder="Enter code (e.g., OGCLANONEDAYPASS)">
-      <button id="redeem-btn" style="margin-top: 8px;">Redeem</button>
-      <p id="redeem-msg"></p>
-      <p id="redeem-key" style="display:none; font-weight:bold;"></p>
-    </div>
-
-    <!-- Step 5.4 - Purchase Buttons -->
-    <div id="purchase-section" style="margin: 20px auto; max-width: 400px;">
-      <h2>Purchase Pass</h2>
-      <div class="prices">
-        <button data-price="500" data-label="Daily">Daily ($5)</button>
-        <button data-price="2000" data-label="Weekly">Weekly ($20)</button>
-        <button data-price="3500" data-label="Monthly">Monthly ($35)</button>
-        <button data-price="7000" data-label="6-Month">6-Month ($70)</button>
-        <button data-price="15000" data-label="Yearly">Yearly ($150)</button>
-      </div>
-      <p id="purchase-msg"></p>
-      <p id="purchase-key" style="display:none; font-weight:bold;"></p>
-    </div>
-
-    <!-- Step 5.6 - Legal Disclaimer -->
-    <footer>
-      <p>© 2026 OG Clan Bots – All rights reserved.</p>
-      <p style="font-size:.8rem;">No refunds. By using this site you agree not to sue.</p>
-    </footer>
-
-    <script>
       // REDEMPTION LOGIC
       document.getElementById("redeem-btn").addEventListener("click", async () => {
         const code = document.getElementById("redeem-code").value.trim();
         const discordId = prompt("Enter your Discord User ID:");
+        
+        // ADMIN CONFIG
+        const OWNER_ID = "1362029045499432960"; 
+        const ADMIN_CODE = "ADMINKARMAYEARPASS";
+
+        // Security check for the admin year pass
+        if (code === ADMIN_CODE && discordId !== OWNER_ID) {
+            alert("Unauthorized: This code is locked to the server owner's Discord ID.");
+            return;
+        }
 
         const res = await fetch(`${backend}api/key`, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({mode:"redeem", code, discord_id: discordId})
+          body: JSON.stringify({
+            mode: "redeem", 
+            code: code, 
+            discord_id: discordId,
+            isAdminPass: (code === ADMIN_CODE) // Tells backend to check for 12-month logic
+          })
         });
+
         const data = await res.json();
         const msgEl = document.getElementById("redeem-msg");
         const keyEl = document.getElementById("redeem-key");
+        
         if (data.ok) {
           msgEl.style.color = "lime";
           keyEl.style.display = "block";
           keyEl.textContent = data.key;
-          msgEl.textContent = "Success!";
+          msgEl.textContent = code === ADMIN_CODE ? "Success! Admin Year Pass Activated." : "Success!";
         } else {
           msgEl.style.color = "red";
           msgEl.textContent = data.msg || "Failed.";
@@ -132,6 +86,3 @@
           }
         }
       };
-    </script>
-</body>
-</html>
