@@ -1,5 +1,62 @@
-<script>
-  // Fixed: Added your full service name and the quotes around the key
-  const backend = "https://og-clan-bots-backend.onrender.com/"; 
-  const stripePub = "pk_live_51TVAjyCDs6LQCbIGs7iwt7rpltX4vmR4kl3NXqtTUT4CrAMoBlrDJAgdWXAvKXXAZ2vB8JnfcMtOrUqflBOK27dK00VM4xhekm";
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>OG Clan Bot Pass</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+      // YOUR SECURE CONFIG
+      const backend = "https://onrender.com"; 
+      const stripePub = "pk_live_51TVAjyCDs6LQCbIGs7iwt7rpltX4vmR4kl3NXqtTUT4CrAMoBlrDJAgdWXAvKXXAZ2vB8JnfcMtOrUqflBOK27dK00VM4xhekm";
+    </script>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #121212; color: white; padding: 20px; }
+        .card { background: #1e1e1e; padding: 20px; border-radius: 15px; max-width: 400px; margin: 20px auto; border: 1px solid #333; }
+        input { width: 80%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #444; background: #000; color: #fff; }
+        button { width: 85%; padding: 12px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold; }
+        #msg { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <h1>OG CLAN BOTS</h1>
+
+    <div class="card">
+        <h2>Redeem Pass</h2>
+        <input id="redeem-code" placeholder="Enter Code (e.g. OGCLANONEDAYPASS)">
+        <button id="redeem-btn">Redeem Now</button>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        document.getElementById("redeem-btn").addEventListener("click", async () => {
+            const code = document.getElementById("redeem-code").value.trim();
+            const discordId = prompt("Enter your Discord User ID:");
+
+            if (!discordId) return;
+
+            const msgEl = document.getElementById("msg");
+            msgEl.textContent = "Processing...";
+
+            try {
+                const res = await fetch(`${backend}api/key`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ mode: "redeem", code: code, discord_id: discordId })
+                });
+
+                const data = await res.json();
+                if (data.ok) {
+                    msgEl.style.color = "lime";
+                    msgEl.innerHTML = `SUCCESS!<br>Key: ${data.key}`;
+                } else {
+                    msgEl.style.color = "red";
+                    msgEl.textContent = "Error: " + data.msg;
+                }
+            } catch (err) {
+                msgEl.style.color = "orange";
+                msgEl.textContent = "Could not connect to backend.";
+            }
+        });
+    </script>
+</body>
+</html>
